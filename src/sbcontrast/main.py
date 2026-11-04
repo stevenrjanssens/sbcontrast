@@ -244,3 +244,7 @@ def sbc():
 		np.save(args.fluctmap+'.npy', temp[2][0])
 	if args.binmap is not None:
 		np.save(args.binmap+'.npy', temp[2][1])
+
+
+if __name__ == "__main__":
+	sbc()
