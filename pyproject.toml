@@ -1,0 +1,28 @@
+[project]
+name = "sbcontrast"
+version = "1.0.2"
+description = "Surface Brightness Limit Calculator"
+readme = "README.txt"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+authors = [
+    { name = "Michael Alan Keim", email = "michael.keim@yale.edu" },
+    { name = "Pieter van Dokkum", email = "pieter.vandokkum@yale.edu" },
+    { name = "Jiaxuan Li", email = "" },
+]
+requires-python = ">=3.11"
+dependencies = [
+    "astropy>=5.0.0",
+    "numpy>=2.1.0",
+]
+
+[project.scripts]
+sbcontrast = "sbcontrast:main"
+
+[project.urls]
+source = "https://github.com/michaelkeim/sbcontrast"
+download = "https://github.com/michaelkeim/sbcontrast/archive/master.tar.gz"
+
+[build-system]
+requires = ["uv_build>=0.13.7,<0.14.0"]
+build-backend = "uv_build"
