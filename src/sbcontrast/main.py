@@ -8,17 +8,17 @@
 
 # Description: The sbcontrast code is a method to obtain surface brightness
 # limits that accurately reflect an images depth at a given spatial scale.
-# Rather than relying on the naive Poisson expectation, this code will 
+# Rather than relying on the naive Poisson expectation, this code will
 # estimate limitations presented by large scale variations. A full description
 # of this method is given in Keim et al. 2022.
 
 # Usage: Note that genuine sources should be masked - otherwise the reported
-# limit will not be as deep as the true value. Thus, proper masks must be 
+# limit will not be as deep as the true value. Thus, proper masks must be
 # generated prior to sbcontrast. Note also that the scale may be rounded so
 # that the binning factors are integers. Moreover, the accuracy of
-# this limit is limited by data reduction - for scales exceeding that of 
-# background subtraction, genuine features above the calculated limit may 
-# have been removed. Finally, at the single pixel scale sbcontrast may 
+# this limit is limited by data reduction - for scales exceeding that of
+# background subtraction, genuine features above the calculated limit may
+# have been removed. Finally, at the single pixel scale sbcontrast may
 # diverge from the true rms due to correlations introduced by re-sampling.
 
 # -----------------------------------------------------------------------------
@@ -70,7 +70,7 @@ def sblimit( image, mask, pix_scale, zeropoint, sigma=1.0, scale_arcsec=60,
 
 	# Image Binning
 	scale_pix = scale_arcsec / pix_scale
-	scale_x = np.array([scale_pix,    int(scale_pix), 
+	scale_x = np.array([scale_pix,    int(scale_pix),
 					int(scale_pix),   int(scale_pix)+1])
 	scale_y = np.array([scale_pix,    int(scale_pix),
 					int(scale_pix)+1, int(scale_pix)+1])
@@ -111,13 +111,13 @@ def sblimit( image, mask, pix_scale, zeropoint, sigma=1.0, scale_arcsec=60,
 	if minrun:
 
 		# Manually filter overly masked background
-		filterwarnings(action='ignore', 
+		filterwarnings(action='ignore',
 			message='All-NaN slice encountered')
-	
+
 		# Find local background from surrounding bins
 		r, c = np.indices((nbins_y-2, nbins_x-2))
 		bck_loc = biweight_location([im_loc[r+(int(i/3)+2)%3, c+(i+2)%3] for i in range(8)], axis=0, ignore_nan=True)
-	
+
 		# Discard poorly determined backgrounds
 		bck_loc[np.sum(~np.isnan([im_loc[r+(int(i/3)+2)%3, c+(i+2)%3] for i in range(8)]), 0) <= minback] = np.nan
 
@@ -190,17 +190,17 @@ def sbc():
 		'Optional: Index of HDU object containing image data (0 by default).')
 	parser.add_argument('-hdum', default='0', type=int, help=
 		'Optional: Index of HDU object containing masks (0 by default).')
-	args = parser.parse_args()	
+	args = parser.parse_args()
 
 	# Open File
 	hduli  = fits.open(args.image)
-	header = hduli[args.hdu].header if args.hdu is not None else hduli[0].header	
+	header = hduli[args.hdu].header if args.hdu is not None else hduli[0].header
 
 	# Pixel Size
 	if args.pix is not None:
 		pix = args.pix
 	else:
-		pix = proj_plane_pixel_scales(WCS(header))[0]*3600. # Assumes square pixels	
+		pix = proj_plane_pixel_scales(WCS(header))[0]*3600. # Assumes square pixels
 
 	# Zeropoint
 	if args.zp is not None:
@@ -222,7 +222,7 @@ def sbc():
 		if zpcheck == False:
 			raise TypeError('Error obtaining zeropoint from header. '+
 							'Please enter value manually with -zp '+
-							'or provide correct reference with -zpref.')	
+							'or provide correct reference with -zpref.')
 
 	# Get Data
 	datai  = hduli[args.hdu].data if args.hdu is not None else hduli[0].data
@@ -231,13 +231,13 @@ def sbc():
 		datam  = hdulm[args.hdum].data if args.hdum is not None else hdulm[0].data
 		hdulm.close()
 	else:
-		datam  = np.zeros(datai.shape)	
+		datam  = np.zeros(datai.shape)
 
 	# Close File
-	hduli.close()	
+	hduli.close()
 
 	# Run
-	temp = sblimit(datai, datam, pix, zp, sigma=args.N, scale_arcsec=args.s)	
+	temp = sblimit(datai, datam, pix, zp, sigma=args.N, scale_arcsec=args.s)
 
 	# Save Files
 	if args.fluctmap is not None:
