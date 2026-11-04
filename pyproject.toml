@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-sbcontrast = "sbcontrast:main"
+sbcontrast = "sbcontrast:main.sbc"
 
 [project.urls]
 source = "https://github.com/michaelkeim/sbcontrast"
