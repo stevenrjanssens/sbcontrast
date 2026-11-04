@@ -182,6 +182,8 @@ def sbc():
                         'Attempts to read from header if not provided.')
     parser.add_argument('-zpref', type=str, help=
                         'Optional: Keyword for zeropoint in image header.')
+    parser.add_argument('-minfrac', default=0.8, type=float, help=
+                        'Optional: Acceptable fraction of masked pixels (0.8 by default).')
     parser.add_argument('-binmap', type=str, help=
                         'Optional: Name to save binned array (X.npy; not saved by default).')
     parser.add_argument('-fluctmap', type=str, help=
@@ -237,7 +239,7 @@ def sbc():
     hduli.close()
 
     # Run
-    temp = sblimit(datai, datam, pix, zp, sigma=args.N, scale_arcsec=args.s)
+    temp = sblimit(datai, datam, pix, zp, sigma=args.N, scale_arcsec=args.s, minfrac=args.minfrac)
 
     # Save Files
     if args.fluctmap is not None:
